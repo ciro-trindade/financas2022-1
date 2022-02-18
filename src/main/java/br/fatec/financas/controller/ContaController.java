@@ -26,12 +26,12 @@ public class ContaController {
 
 	@Autowired
 	private ContaService service;
-	
+
 	@GetMapping
 	public ResponseEntity<List<Conta>> getAll() {
 		return ResponseEntity.ok(service.findAll());
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
 		Conta _conta = service.find(id);
@@ -40,19 +40,16 @@ public class ContaController {
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<Void> post(@RequestBody Conta conta) throws URISyntaxException {
+	public ResponseEntity<Conta> post(@RequestBody Conta conta) throws URISyntaxException {
 		service.create(conta);
-		URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(conta.getId())
-                .toUri();
-		return ResponseEntity.created(location).build();
-		//return ResponseEntity.ok(conta);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(conta.getId())
+				.toUri();
+		return ResponseEntity.created(location).body(conta);
+		// return ResponseEntity.ok(conta);
 	}
-	
+
 	@PutMapping
 	public ResponseEntity<?> put(@RequestBody Conta conta) {
 		if (service.update(conta)) {
@@ -60,7 +57,7 @@ public class ContaController {
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		if (service.delete(id)) {
@@ -68,5 +65,27 @@ public class ContaController {
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
-	
+
+	@PutMapping("/depositar/{id}/{valor}")
+	public ResponseEntity<?> depositar(@PathVariable("id") Long id, @PathVariable("valor") Float valor) {
+		Float _saldo = service.depositar(id, valor);
+		if (_saldo != null) {
+			return ResponseEntity.ok(_saldo);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+
+	@PutMapping("/sacar/{id}/{valor}")
+	public ResponseEntity<?> sacar(@PathVariable("id") Long id, @PathVariable("valor") Float valor) {
+		try {
+			Float _saldo = service.sacar(id, valor);
+			if (_saldo != null) {
+				return ResponseEntity.ok(_saldo);
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+		}
+	}
+
 }

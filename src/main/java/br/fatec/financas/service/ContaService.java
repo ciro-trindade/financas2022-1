@@ -57,4 +57,26 @@ public class ContaService {
 		return false;
 	}
 	
+	public Float depositar(Long id, Float valor) {
+		Conta _conta = find(id);
+		if (_conta != null) {
+			_conta.setSaldo(_conta.getSaldo() + valor);
+			return _conta.getSaldo();
+		}
+		return null;
+	}
+	
+	public Float sacar(Long id, Float valor) throws IllegalArgumentException {
+		Conta _conta = find(id);
+		if (_conta != null) {
+			Float _saldo = _conta.getSaldo();
+			if (_saldo >= valor) {
+				_conta.setSaldo(_saldo - valor);
+				return _conta.getSaldo();
+			}
+			throw new IllegalArgumentException("Saldo insuficiente");
+		}
+		return null;
+	}
+
 }
