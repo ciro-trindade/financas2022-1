@@ -1,77 +1,75 @@
 package br.fatec.financas.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.fatec.financas.model.Conta;
+import br.fatec.financas.repository.ContaRepository;
 
 @Service
-public class ContaService {
-	private static List<Conta> contas = new ArrayList<>();
+public class ContaService implements ServiceInterface<Conta>{
+	
+	@Autowired
+	private ContaRepository repository;
 
 	public ContaService() {
 	}
 
-	public void create(Conta conta) {
-		conta.setId(conta.generateId());
-		contas.add(conta);
+	@Override
+	public Conta create(Conta conta) {
+		repository.save(conta);
+		return conta;
 	}
 	
+	@Override
 	public List<Conta> findAll() {
-		return contas;
+		return repository.findAll();
 	}
 	
-	public Conta find(Conta conta) {
-		for (Conta c : contas) {
-			if (c.equals(conta)) {
-				return c;
-			}
-		}
-		return null;
+	@Override
+	public Conta findById(Long id) {
+		Optional<Conta> obj = repository.findById(id);
+		return obj.orElse(null);
 	}
 	
-	public Conta find(Long id) {
-		return find(new Conta(id));
-	}
-	
+	@Override
 	public boolean update(Conta conta) {
-		Conta _conta = find(conta);
-		if (_conta != null) {
-			_conta.setAgencia(conta.getAgencia());
-			_conta.setNumero(conta.getNumero());
-			_conta.setTitular(conta.getTitular());
-			_conta.setSaldo(conta.getSaldo());
+		if (repository.existsById(conta.getId())) {
+			repository.save(conta);
 			return true;
 		}
 		return false;
 	}
 	
+	@Override
 	public boolean delete(Long id) {
-		Conta _conta = find(id);
-		if (_conta != null) {
-			contas.remove(_conta);
+		if (repository.existsById(id)) {
+			repository.deleteById(id);
 			return true;
 		}
 		return false;
 	}
 	
 	public Float depositar(Long id, Float valor) {
-		Conta _conta = find(id);
+		Conta _conta = findById(id);
 		if (_conta != null) {
 			_conta.setSaldo(_conta.getSaldo() + valor);
+			update(_conta);
 			return _conta.getSaldo();
 		}
 		return null;
 	}
 	
 	public Float sacar(Long id, Float valor) throws IllegalArgumentException {
-		Conta _conta = find(id);
+		Conta _conta = findById(id);
 		if (_conta != null) {
 			Float _saldo = _conta.getSaldo();
 			if (_saldo >= valor) {
 				_conta.setSaldo(_saldo - valor);
+				update(_conta);
 				return _conta.getSaldo();
 			}
 			throw new IllegalArgumentException("Saldo insuficiente");

@@ -22,34 +22,37 @@ import br.fatec.financas.service.ContaService;
 
 @RestController
 @RequestMapping("/contas")
-public class ContaController {
+public class ContaController implements ControllerInterface<Conta>{
 
 	@Autowired
 	private ContaService service;
 
+	@Override
 	@GetMapping
 	public ResponseEntity<List<Conta>> getAll() {
 		return ResponseEntity.ok(service.findAll());
 	}
 
+	@Override
 	@GetMapping("/{id}")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
-		Conta _conta = service.find(id);
+		Conta _conta = service.findById(id);
 		if (_conta != null) {
 			return ResponseEntity.ok(_conta);
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
+	@Override
 	@PostMapping
 	public ResponseEntity<Conta> post(@RequestBody Conta conta) throws URISyntaxException {
 		service.create(conta);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(conta.getId())
 				.toUri();
 		return ResponseEntity.created(location).body(conta);
-		// return ResponseEntity.ok(conta);
 	}
 
+	@Override
 	@PutMapping
 	public ResponseEntity<?> put(@RequestBody Conta conta) {
 		if (service.update(conta)) {
@@ -58,6 +61,7 @@ public class ContaController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
+	@Override
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		if (service.delete(id)) {
