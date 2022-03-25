@@ -10,6 +10,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.fatec.financas.model.Categoria;
 import br.fatec.financas.model.Conta;
@@ -37,6 +39,8 @@ public class MovimentacaoDTO {
 	private Calendar data;
 
 	@NotNull
+	@Getter(onMethod = @__(@JsonIgnore))
+	@Setter(onMethod = @__(@JsonProperty))
 	private Conta conta;
 	
 	private List<Categoria> categorias;
