@@ -6,39 +6,46 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.fatec.financas.dto.MovimentacaoDTO;
+import br.fatec.financas.mapper.MovimentacaoMapper;
 import br.fatec.financas.model.Movimentacao;
 import br.fatec.financas.repository.MovimentacaoRepository;
+import lombok.NoArgsConstructor;
 
 @Service
-public class MovimentacaoService implements ServiceInterface<Movimentacao>{
+@NoArgsConstructor
+public class MovimentacaoService implements ServiceInterface<MovimentacaoDTO>{
 	
 	@Autowired
 	private MovimentacaoRepository repository;
-
-	public MovimentacaoService() {
-	}
-
+	
+	@Autowired	
+	private MovimentacaoMapper mapper;
+	
 	@Override
-	public Movimentacao create(Movimentacao Movimentacao) {
-		repository.save(Movimentacao);
-		return Movimentacao;
+	public MovimentacaoDTO create(MovimentacaoDTO obj) {
+		Movimentacao movimentacao = repository.save(mapper.toEntity(obj));
+		return mapper.toDTO(movimentacao);
 	}
 	
 	@Override
-	public List<Movimentacao> findAll() {
-		return repository.findAll();
+	public List<MovimentacaoDTO> findAll() {
+		return mapper.toDTO(repository.findAll());
 	}
 	
 	@Override
-	public Movimentacao findById(Long id) {
+	public MovimentacaoDTO findById(Long id) {
 		Optional<Movimentacao> obj = repository.findById(id);
-		return obj.orElse(null);
+		if (obj.isPresent()) {
+			return mapper.toDTO(obj.get());
+		}
+		return null;
 	}
 	
 	@Override
-	public boolean update(Movimentacao Movimentacao) {
-		if (repository.existsById(Movimentacao.getId())) {
-			repository.save(Movimentacao);
+	public boolean update(MovimentacaoDTO obj) {
+		if (repository.existsById(obj.getId())) {
+			repository.save(mapper.toEntity(obj));
 			return true;
 		}
 		return false;

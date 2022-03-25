@@ -16,10 +16,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_movimentacao")
 public class Movimentacao extends AbstractEntity {
@@ -37,9 +42,10 @@ public class Movimentacao extends AbstractEntity {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "dt_data")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private Calendar data;
-	
+
+	@Getter(onMethod = @__(@JsonIgnore))
+	@Setter(onMethod = @__(@JsonProperty))
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Conta conta;
 	
@@ -48,58 +54,5 @@ public class Movimentacao extends AbstractEntity {
 	           joinColumns=@JoinColumn(name="fk_movimentacao_id"),
 	           inverseJoinColumns=@JoinColumn(name="fk_categoria_id"))
 	private List<Categoria> categorias;
-
-	public Movimentacao() {
-	}
-
-	public Float getValor() {
-		return valor;
-	}
-
-	public void setValor(Float valor) {
-		this.valor = valor;
-	}
-
-	public TipoMovimentacao getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(TipoMovimentacao tipo) {
-		this.tipo = tipo;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public Calendar getData() {
-		return data;
-	}
-
-	public void setData(Calendar data) {
-		this.data = data;
-	}
-
-	@JsonIgnore
-	public Conta getConta() {
-		return conta;
-	}
-
-	@JsonProperty
-	public void setConta(Conta conta) {
-		this.conta = conta;
-	}
-
-	public List<Categoria> getCategorias() {
-		return categorias;
-	}
-
-	public void setCategorias(List<Categoria> categorias) {
-		this.categorias = categorias;
-	}
 		
 }
