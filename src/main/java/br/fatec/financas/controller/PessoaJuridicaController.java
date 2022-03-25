@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,26 +19,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.fatec.financas.model.PessoaJuridica;
+import br.fatec.financas.dto.PessoaJuridicaDTO;
 import br.fatec.financas.service.PessoaJuridicaService;
 
 @RestController
 @RequestMapping("/pessoas-juridicas")
-public class PessoaJuridicaController implements ControllerInterface<PessoaJuridica> {
+public class PessoaJuridicaController implements ControllerInterface<PessoaJuridicaDTO> {
 
 	@Autowired
 	private PessoaJuridicaService service;
 	
 	@Override
 	@GetMapping
-	public ResponseEntity<List<PessoaJuridica>> getAll() {
+	public ResponseEntity<List<PessoaJuridicaDTO>> getAll() {
 		return ResponseEntity.ok(service.findAll());
 	}
 
 	@Override
 	@GetMapping("/{id}")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
-		PessoaJuridica obj = service.findById(id);
+		PessoaJuridicaDTO obj = service.findById(id);
 		if (obj != null) {
 			return ResponseEntity.ok(obj);
 		}
@@ -45,16 +47,16 @@ public class PessoaJuridicaController implements ControllerInterface<PessoaJurid
 
 	@Override
 	@PostMapping
-	public ResponseEntity<PessoaJuridica> post(@RequestBody PessoaJuridica obj) throws URISyntaxException {
-		service.create(obj);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId())
+	public ResponseEntity<PessoaJuridicaDTO> post(@Valid @RequestBody PessoaJuridicaDTO obj) throws URISyntaxException {
+		PessoaJuridicaDTO pj =  service.create(obj);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pj.getId())
 				.toUri();
-		return ResponseEntity.created(location).body(obj);
+		return ResponseEntity.created(location).body(pj);
 	}
 
 	@Override
 	@PutMapping
-	public ResponseEntity<?> put(@RequestBody PessoaJuridica obj) {
+	public ResponseEntity<?> put(@Valid @RequestBody PessoaJuridicaDTO obj) {
 		if (service.update(obj)) {
 			return ResponseEntity.ok(obj);
 		}

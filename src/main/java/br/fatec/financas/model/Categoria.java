@@ -4,6 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_categoria")
 public class Categoria extends AbstractEntity {
@@ -11,16 +18,4 @@ public class Categoria extends AbstractEntity {
 	
 	@Column(name = "nm_categoria", length = 50)
 	private String nome;
-
-	public Categoria() {
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}	
-
 }

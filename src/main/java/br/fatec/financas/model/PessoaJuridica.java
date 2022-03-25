@@ -4,9 +4,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "tb_pessoa_juridica")
 @Entity
-//@DiscriminatorValue("Pessoa Jurídica")
 public class PessoaJuridica extends Cliente {
 	private static final long serialVersionUID = 1L;
 	
@@ -15,24 +21,4 @@ public class PessoaJuridica extends Cliente {
 	
 	@Column(name="nm_ramo_atividade", length=20)
 	private String ramoAtividade;
-
-	public PessoaJuridica() {
-	}
-
-	public String getCnpj() {
-		return cnpj;
-	}
-
-	public void setCnpj(String cnpj) {
-		this.cnpj = cnpj;
-	}
-
-	public String getRamoAtividade() {
-		return ramoAtividade;
-	}
-
-	public void setRamoAtividade(String ramoAtividade) {
-		this.ramoAtividade = ramoAtividade;
-	}
-		
 }

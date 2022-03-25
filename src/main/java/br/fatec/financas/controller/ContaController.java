@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +24,7 @@ import br.fatec.financas.service.ContaService;
 
 @RestController
 @RequestMapping("/contas")
-public class ContaController implements ControllerInterface<Conta>{
+public class ContaController implements ControllerInterface<Conta> {
 
 	@Autowired
 	private ContaService service;
@@ -33,6 +35,12 @@ public class ContaController implements ControllerInterface<Conta>{
 		return ResponseEntity.ok(service.findAll());
 	}
 
+	@GetMapping("/page")
+	public ResponseEntity<Page<Conta>> getAll(Pageable pageable) {
+		return ResponseEntity.ok(service.findAll(pageable));
+	}
+
+	
 	@Override
 	@GetMapping("/{id}")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
@@ -92,4 +100,19 @@ public class ContaController implements ControllerInterface<Conta>{
 		}
 	}
 
+	@GetMapping(value = "/agencia/{agencia}")
+	public ResponseEntity<List<Conta>> getByAgencia(@PathVariable("agencia") Integer agencia) {
+		return ResponseEntity.ok(service.listarPorAgencia(agencia));
+	}
+
+	@GetMapping(value = "/agencia/{agencia}/{from}/{to}")
+	public ResponseEntity<List<Conta>> getByAgenciaESaldo(@PathVariable("agencia") Integer agencia,
+			@PathVariable("from") Float from, @PathVariable("to") Float to) {
+		return ResponseEntity.ok(service.listarPorAgenciaESaldo(agencia, from, to));
+	}
+
+	@GetMapping(value = "/cliente/{nome}")
+	public ResponseEntity<List<Conta>> getByNomeCliente(@PathVariable("nome") String nome) {
+		return ResponseEntity.ok(service.listarPorNomeCliente(nome));
+	}
 }

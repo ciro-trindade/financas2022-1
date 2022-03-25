@@ -6,36 +6,44 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.fatec.financas.dto.PessoaFisicaDTO;
+import br.fatec.financas.mapper.PessoaFisicaMapper;
 import br.fatec.financas.model.PessoaFisica;
 import br.fatec.financas.repository.PessoaFisicaRepository;
 
 @Service
-public class PessoaFisicaService implements ServiceInterface<PessoaFisica> {
+public class PessoaFisicaService implements ServiceInterface<PessoaFisicaDTO> {
 
 	@Autowired
 	private PessoaFisicaRepository repository;
 	
+	@Autowired
+	private PessoaFisicaMapper mapper;
+	
 	@Override
-	public PessoaFisica create(PessoaFisica obj) {
-		repository.save(obj);
-		return obj;
+	public PessoaFisicaDTO create(PessoaFisicaDTO obj) {
+		PessoaFisica pf = repository.save(mapper.toEntity(obj));
+		return mapper.toDTO(pf);
 	}
 
 	@Override
-	public PessoaFisica findById(Long id) {
+	public PessoaFisicaDTO findById(Long id) {
 		Optional<PessoaFisica> obj = repository.findById(id);
-		return obj.orElse(null);
+		if (obj.isPresent()) {
+			return mapper.toDTO(obj.get());
+		}
+		return null;
 	}
 
 	@Override
-	public List<PessoaFisica> findAll() {
-		return repository.findAll();
+	public List<PessoaFisicaDTO> findAll() {
+		return mapper.toDTO(repository.findAll());
 	}
 
 	@Override
-	public boolean update(PessoaFisica obj) {
+	public boolean update(PessoaFisicaDTO obj) {
 		if (repository.existsById(obj.getId())) {
-			repository.save(obj);
+			repository.save(mapper.toEntity(obj));
 			return true;
 		}
 		return false;

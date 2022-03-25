@@ -4,14 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.fatec.financas.model.Conta;
 import br.fatec.financas.repository.ContaRepository;
 
 @Service
-public class ContaService implements ServiceInterface<Conta>{
-	
+public class ContaService implements ServiceInterface<Conta> {
+
 	@Autowired
 	private ContaRepository repository;
 
@@ -23,10 +25,14 @@ public class ContaService implements ServiceInterface<Conta>{
 		repository.save(conta);
 		return conta;
 	}
-	
+
 	@Override
 	public List<Conta> findAll() {
 		return repository.findAll();
+	}
+
+	public Page<Conta> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 	
 	@Override
@@ -34,6 +40,7 @@ public class ContaService implements ServiceInterface<Conta>{
 		Optional<Conta> obj = repository.findById(id);
 		return obj.orElse(null);
 	}
+
 	
 	@Override
 	public boolean update(Conta conta) {
@@ -43,7 +50,7 @@ public class ContaService implements ServiceInterface<Conta>{
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean delete(Long id) {
 		if (repository.existsById(id)) {
@@ -52,7 +59,7 @@ public class ContaService implements ServiceInterface<Conta>{
 		}
 		return false;
 	}
-	
+
 	public Float depositar(Long id, Float valor) {
 		Conta _conta = findById(id);
 		if (_conta != null) {
@@ -62,7 +69,7 @@ public class ContaService implements ServiceInterface<Conta>{
 		}
 		return null;
 	}
-	
+
 	public Float sacar(Long id, Float valor) throws IllegalArgumentException {
 		Conta _conta = findById(id);
 		if (_conta != null) {
@@ -77,4 +84,18 @@ public class ContaService implements ServiceInterface<Conta>{
 		return null;
 	}
 
+	public List<Conta> listarPorAgencia(Integer agencia) {
+		return repository.listarPorAgencia(agencia);
+		//return repository.findByAgencia(agencia);
+	}
+
+	public List<Conta> listarPorAgenciaESaldo(Integer agencia, Float from, Float to) {
+		//return repository.listarPorAgenciaESaldo(agencia, from, to);
+		return repository.findByAgenciaAndSaldoBetween(agencia, from, to);
+	}
+
+	public List<Conta> listarPorNomeCliente(String nome) {
+		return repository.listarPorNomeCliente(nome);
+
+	}
 }
