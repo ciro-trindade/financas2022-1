@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,24 +21,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.fatec.financas.model.Conta;
+import br.fatec.financas.dto.ContaDTO;
 import br.fatec.financas.service.ContaService;
 
 @RestController
 @RequestMapping("/contas")
-public class ContaController implements ControllerInterface<Conta> {
+public class ContaController implements ControllerInterface<ContaDTO> {
 
 	@Autowired
 	private ContaService service;
 
 	@Override
 	@GetMapping
-	public ResponseEntity<List<Conta>> getAll() {
+	public ResponseEntity<List<ContaDTO>> getAll() {
 		return ResponseEntity.ok(service.findAll());
 	}
 
 	@GetMapping("/page")
-	public ResponseEntity<Page<Conta>> getAll(Pageable pageable) {
+	public ResponseEntity<Page<ContaDTO>> getAll(Pageable pageable) {
 		return ResponseEntity.ok(service.findAll(pageable));
 	}
 
@@ -44,7 +46,7 @@ public class ContaController implements ControllerInterface<Conta> {
 	@Override
 	@GetMapping("/{id}")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
-		Conta _conta = service.findById(id);
+		ContaDTO _conta = service.findById(id);
 		if (_conta != null) {
 			return ResponseEntity.ok(_conta);
 		}
@@ -53,16 +55,16 @@ public class ContaController implements ControllerInterface<Conta> {
 
 	@Override
 	@PostMapping
-	public ResponseEntity<Conta> post(@RequestBody Conta conta) throws URISyntaxException {
-		service.create(conta);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(conta.getId())
+	public ResponseEntity<ContaDTO> post(@Valid @RequestBody ContaDTO obj) throws URISyntaxException {
+		ContaDTO dto = service.create(obj);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId())
 				.toUri();
-		return ResponseEntity.created(location).body(conta);
+		return ResponseEntity.created(location).body(dto);
 	}
 
 	@Override
 	@PutMapping
-	public ResponseEntity<?> put(@RequestBody Conta conta) {
+	public ResponseEntity<?> put(@Valid @RequestBody ContaDTO conta) {
 		if (service.update(conta)) {
 			return ResponseEntity.ok(conta);
 		}
@@ -101,18 +103,18 @@ public class ContaController implements ControllerInterface<Conta> {
 	}
 
 	@GetMapping(value = "/agencia/{agencia}")
-	public ResponseEntity<List<Conta>> getByAgencia(@PathVariable("agencia") Integer agencia) {
+	public ResponseEntity<List<ContaDTO>> getByAgencia(@PathVariable("agencia") Integer agencia) {
 		return ResponseEntity.ok(service.listarPorAgencia(agencia));
 	}
 
 	@GetMapping(value = "/agencia/{agencia}/{from}/{to}")
-	public ResponseEntity<List<Conta>> getByAgenciaESaldo(@PathVariable("agencia") Integer agencia,
+	public ResponseEntity<List<ContaDTO>> getByAgenciaESaldo(@PathVariable("agencia") Integer agencia,
 			@PathVariable("from") Float from, @PathVariable("to") Float to) {
 		return ResponseEntity.ok(service.listarPorAgenciaESaldo(agencia, from, to));
 	}
 
 	@GetMapping(value = "/cliente/{nome}")
-	public ResponseEntity<List<Conta>> getByNomeCliente(@PathVariable("nome") String nome) {
+	public ResponseEntity<List<ContaDTO>> getByNomeCliente(@PathVariable("nome") String nome) {
 		return ResponseEntity.ok(service.listarPorNomeCliente(nome));
 	}
 }

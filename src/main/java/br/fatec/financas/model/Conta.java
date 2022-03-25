@@ -14,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Singular;
 import lombok.ToString;
 
 @Getter
@@ -36,7 +35,6 @@ public class Conta extends AbstractEntity {
 	@Column(name = "vl_saldo")
 	private Float saldo;
 
-	@Singular(value = "movimentacoes")
 	@Getter(onMethod = @__(@JsonIgnore))
 	@Setter(onMethod = @__(@JsonProperty))
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "conta")
