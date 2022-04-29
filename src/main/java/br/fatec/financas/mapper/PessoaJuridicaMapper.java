@@ -21,6 +21,9 @@ public class PessoaJuridicaMapper {
 		pessoaJuridica.setCnpj(obj.getCnpj());
 		pessoaJuridica.setRamoAtividade(obj.getRamoAtividade());
 		pessoaJuridica.setConta(obj.getConta());
+		pessoaJuridica.setPerfis(obj.getPerfis());
+		pessoaJuridica.setLogin(obj.getLogin());
+		pessoaJuridica.setSenha(obj.getSenha());
 		return pessoaJuridica;				
 	}
 	
@@ -32,6 +35,10 @@ public class PessoaJuridicaMapper {
 		pessoaJuridicaDTO.setCnpj(obj.getCnpj());
 		pessoaJuridicaDTO.setRamoAtividade(obj.getRamoAtividade());
 		pessoaJuridicaDTO.setConta(obj.getConta());
+		pessoaJuridicaDTO.setPerfis(obj.getPerfisAsInteger());
+		pessoaJuridicaDTO.setLogin(obj.getLogin());
+		pessoaJuridicaDTO.setSenha(obj.getSenha());
+
 		return pessoaJuridicaDTO;				
 	}
 	

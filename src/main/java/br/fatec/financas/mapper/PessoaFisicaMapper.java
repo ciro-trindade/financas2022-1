@@ -21,6 +21,9 @@ public class PessoaFisicaMapper {
 		pessoaFisica.setCpf(obj.getCpf());
 		pessoaFisica.setProfissao(obj.getProfissao());
 		pessoaFisica.setConta(obj.getConta());
+		pessoaFisica.setPerfis(obj.getPerfis());
+		pessoaFisica.setLogin(obj.getLogin());
+		pessoaFisica.setSenha(obj.getSenha());
 		return pessoaFisica;				
 	}
 	
@@ -32,6 +35,9 @@ public class PessoaFisicaMapper {
 		pessoaFisicaDTO.setCpf(obj.getCpf());
 		pessoaFisicaDTO.setProfissao(obj.getProfissao());
 		pessoaFisicaDTO.setConta(obj.getConta());
+		pessoaFisicaDTO.setPerfis(obj.getPerfisAsInteger());
+		pessoaFisicaDTO.setLogin(obj.getLogin());
+		pessoaFisicaDTO.setSenha(obj.getSenha());
 		return pessoaFisicaDTO;				
 	}
 	

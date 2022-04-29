@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.fatec.financas.dto.PessoaJuridicaDTO;
@@ -20,8 +21,12 @@ public class PessoaJuridicaService implements ServiceInterface<PessoaJuridicaDTO
 	@Autowired
 	private PessoaJuridicaMapper mapper;
 	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
 	@Override
 	public PessoaJuridicaDTO create(PessoaJuridicaDTO obj) {
+		obj.setSenha(passwordEncoder.encode(obj.getSenha()));
 	 	PessoaJuridica pj =  repository.save(mapper.toEntity(obj));
 		return mapper.toDTO(pj);
 	}
