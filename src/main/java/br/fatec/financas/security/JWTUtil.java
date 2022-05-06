@@ -5,6 +5,8 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import br.fatec.financas.model.TipoPerfil;
+import br.fatec.financas.service.ClienteService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -50,5 +52,13 @@ public class JWTUtil {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public boolean authorized(Long id) {
+		UserDetailsImpl user = ClienteService.authenticated();
+		if (user == null || (!user.hasRole(TipoPerfil.ADMIN) && !id.equals(user.getId()))) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -8,9 +8,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.fatec.financas.dto.PessoaFisicaDTO;
+import br.fatec.financas.exception.AuthorizationException;
 import br.fatec.financas.mapper.PessoaFisicaMapper;
 import br.fatec.financas.model.PessoaFisica;
 import br.fatec.financas.repository.PessoaFisicaRepository;
+import br.fatec.financas.security.JWTUtil;
 
 @Service
 public class PessoaFisicaService implements ServiceInterface<PessoaFisicaDTO> {
@@ -24,6 +26,9 @@ public class PessoaFisicaService implements ServiceInterface<PessoaFisicaDTO> {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private JWTUtil jwtUtil;
+	
 	@Override
 	public PessoaFisicaDTO create(PessoaFisicaDTO obj) {
 		obj.setSenha(passwordEncoder.encode(obj.getSenha()));
@@ -32,7 +37,10 @@ public class PessoaFisicaService implements ServiceInterface<PessoaFisicaDTO> {
 	}
 
 	@Override
-	public PessoaFisicaDTO findById(Long id) {
+	public PessoaFisicaDTO findById(Long id) throws AuthorizationException {
+		if (!jwtUtil.authorized(id)) {
+			throw new AuthorizationException("Acesso negado!");
+		}
 		Optional<PessoaFisica> obj = repository.findById(id);
 		if (obj.isPresent()) {
 			return mapper.toDTO(obj.get());
@@ -46,7 +54,10 @@ public class PessoaFisicaService implements ServiceInterface<PessoaFisicaDTO> {
 	}
 
 	@Override
-	public boolean update(PessoaFisicaDTO obj) {
+	public boolean update(PessoaFisicaDTO obj) throws AuthorizationException {
+		if (!jwtUtil.authorized(obj.getId())) {
+			throw new AuthorizationException("Acesso negado!");
+		}
 		if (repository.existsById(obj.getId())) {
 			repository.save(mapper.toEntity(obj));
 			return true;
