@@ -1,45 +1,38 @@
 package br.fatec.financas.mapper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import br.fatec.financas.dto.CategoriaDTO;
 import br.fatec.financas.model.Categoria;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@NoArgsConstructor
+@AllArgsConstructor
 @Component
 public class CategoriaMapper {
+	
+	private ModelMapper modelMapper;
 
 	public Categoria toEntity(CategoriaDTO categoriaDTO) {
-		Categoria categoria = new Categoria();
-		categoria.setId(categoriaDTO.getId());
-		categoria.setNome(categoriaDTO.getNome());
-		return categoria;
+		return modelMapper.map(categoriaDTO, Categoria.class);
 	}
 
 	public CategoriaDTO toDTO(Categoria categoria) {
-		CategoriaDTO categoriaDTO = new CategoriaDTO();
-		categoriaDTO.setId(categoria.getId());
-		categoriaDTO.setNome(categoria.getNome());
-		return categoriaDTO;
+		return modelMapper.map(categoria, CategoriaDTO.class);
 	}
 
 	public List<CategoriaDTO> toDTO(List<Categoria> categorias) {
-		List<CategoriaDTO> categoriasDTO = new ArrayList<>();
-		for (Categoria c : categorias) {
-			categoriasDTO.add(toDTO(c));
-		}
-		return categoriasDTO;
+		return categorias.stream() 
+				.map(this::toDTO)
+				.collect(Collectors.toList());
 	}
 
 	public List<Categoria> toEntity(List<CategoriaDTO> categoriasDTO) {
-		List<Categoria> categorias = new ArrayList<>();
-		for (CategoriaDTO c : categoriasDTO) {
-			categorias.add(toEntity(c));
-		}
-		return categorias;
+		return categoriasDTO.stream()
+				.map(this::toEntity)
+				.collect(Collectors.toList());
 	}
 }

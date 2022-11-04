@@ -16,6 +16,6 @@ import lombok.Setter;
 public class Categoria extends AbstractEntity {
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "nm_categoria", length = 50)
+	@Column(name = "nm_categoria", length = 50, nullable = false)
 	private String nome;
 }

@@ -23,6 +23,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.fatec.financas.dto.PessoaFisicaDTO;
 import br.fatec.financas.exception.AuthorizationException;
 import br.fatec.financas.service.PessoaFisicaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/pessoas-fisicas")
@@ -39,7 +42,14 @@ public class PessoaFisicaController implements ControllerInterface<PessoaFisicaD
 	}
 
 	@Override
-	@GetMapping("/{id}")
+	@Operation(summary = "Devolve uma pessoa física dado seu identificador")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna uma pessoa física dado seu id"),
+			@ApiResponse(responseCode = "401", description = "Você não está autenticado na API"),
+			@ApiResponse(responseCode = "403", description = "Você não tem permissão para executar essa operação"),
+			@ApiResponse(responseCode = "404", description = "Id da pessoa física não foi encontrado")
+	})
+	@GetMapping(value = "/{id}", produces = "application/json")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
 		try {
 			PessoaFisicaDTO obj = service.findById(id);

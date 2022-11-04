@@ -6,43 +6,37 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.fatec.financas.dto.CategoriaDTO;
-import br.fatec.financas.mapper.CategoriaMapper;
 import br.fatec.financas.model.Categoria;
 import br.fatec.financas.repository.CategoriaRepository;
 
 @Service
-public class CategoriaService implements ServiceInterface<CategoriaDTO> {
+public class CategoriaService implements ServiceInterface<Categoria> {
 	
 	@Autowired
 	private CategoriaRepository repository;
 	
-	@Autowired
-	private CategoriaMapper mapper;
-
 	public CategoriaService() {
 	}
 
-	public CategoriaDTO create(CategoriaDTO obj) {
-		Categoria categoria = repository.save(mapper.toEntity(obj));
-		return mapper.toDTO(categoria);		
+	public Categoria create(Categoria obj) {
+		return repository.save(obj);
 	}
 	
-	public List<CategoriaDTO> findAll() {
-		return mapper.toDTO(repository.findAll());
+	public List<Categoria> findAll() {
+		return repository.findAll();
 	}
 	
-	public CategoriaDTO findById(Long id) {
+	public Categoria findById(Long id) {
 		Optional<Categoria> obj = repository.findById(id);
 		if (obj.isPresent()) {
-			return mapper.toDTO(obj.get());
+			return obj.get();
 		}
 		return null;
 	}
 	
-	public boolean update(CategoriaDTO categoriaDTO) {
-		if (repository.existsById(categoriaDTO.getId())) {
-			repository.save(mapper.toEntity(categoriaDTO));
+	public boolean update(Categoria categoria) {
+		if (repository.existsById(categoria.getId())) {
+			repository.save(categoria);
 			return true;
 		}
 		return false;

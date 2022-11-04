@@ -25,7 +25,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.fatec.financas.dto.ContaDTO;
 import br.fatec.financas.exception.AuthorizationException;
 import br.fatec.financas.service.ContaService;
+import io.swagger.v3.oas.annotations.Hidden;
 
+@Hidden
 @RestController
 @RequestMapping("/contas")
 public class ContaController implements ControllerInterface<ContaDTO> {

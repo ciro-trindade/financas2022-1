@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:remove="all">E-mail</title>
+</head>
+<body>
+	<div>
+		<img th:src="@{/images/pipa3.jpg}"/>
+		<h1>
+			<span th:text="${email.text}"></span>
+		</h1>
+	</div>
+</body>
+</html>
